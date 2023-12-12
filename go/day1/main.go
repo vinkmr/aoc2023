@@ -93,14 +93,6 @@ func calibrate(cal_string string) int {
 		}
 	}
 
-	// firstNum_idx, ok := strings.IndexAny(cal_string, k)
-	// FirstNum := string([]rune(cal_string)[firstNum_idx])
-	//
-	// lastNumIndex, ok := strings.LastIndexAny(cal_string, k)
-	// LastNum := string([]rune(cal_string)[lastNumIndex])
-
-	// CalibrationNumber := strings.Join([]string{firstNum, lastNum}, "")
-
 	fmt.Println("FirstNum = ", FirstNum)
 	fmt.Println("LastNum = ", LastNum)
 	CalibrationNumber := strconv.Itoa(FirstNum) + strconv.Itoa(LastNum)
@@ -108,7 +100,5 @@ func calibrate(cal_string string) int {
 	if i, err := strconv.Atoi(CalibrationNumber); err == nil {
 		CalibrationNumberValue = i
 	}
-
-	// return calNum_val
 	return CalibrationNumberValue
 }

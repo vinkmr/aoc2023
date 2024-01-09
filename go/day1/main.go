@@ -19,7 +19,7 @@ func main() {
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 
-	var fileLines []string
+	var fileLines []string // creating a slice
 
 	for fileScanner.Scan() {
 		fileLines = append(fileLines, fileScanner.Text())
@@ -28,7 +28,8 @@ func main() {
 	readFile.Close()
 
 	for lineNumber, line := range fileLines {
-		fmt.Println(lineNumber, "\t", line)
+		fmt.Println()
+		fmt.Println(lineNumber, ":\t", line)
 		line_cal_val := calibrate(line)
 		fmt.Println(line_cal_val)
 		calibration_values = append(calibration_values, line_cal_val)
@@ -43,8 +44,7 @@ func main() {
 }
 
 func calibrate(cal_string string) int {
-	var FirstNum int
-	var LastNum int
+	var FirstNum, LastNum int
 	var firstNumIndex int = -1
 	var lastNumIndex int = -1
 	var CalibrationNumberValue int
@@ -70,10 +70,8 @@ func calibrate(cal_string string) int {
 	}
 
 	for k := range numberSetStrings {
-		// fmt.Println("Searching for ", k, "at the beginning")
 		currentNumIndex := strings.Index(cal_string, k)
 		if currentNumIndex != -1 {
-			fmt.Println("Found ", k, "at the beginning at index = ", currentNumIndex)
 			if (firstNumIndex == -1) || (currentNumIndex < firstNumIndex) {
 				firstNumIndex = currentNumIndex
 				FirstNum = numberSetStrings[k]
@@ -82,10 +80,8 @@ func calibrate(cal_string string) int {
 	}
 
 	for k := range numberSetStrings {
-		// fmt.Println("Searching for ", k, "at the end")
 		currentNumIndex := strings.LastIndex(cal_string, k)
 		if currentNumIndex != -1 {
-			fmt.Println("Found ", k, "at the end at index = ", currentNumIndex)
 			if (lastNumIndex == -1) || (currentNumIndex > lastNumIndex) {
 				lastNumIndex = currentNumIndex
 				LastNum = numberSetStrings[k]

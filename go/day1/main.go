@@ -1,9 +1,8 @@
 package main
 
 import (
-	"bufio"
+	"aoc2023/go/utils"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -11,22 +10,7 @@ import (
 func main() {
 	var calibration_values []int
 
-	readFile, err := os.Open("/home/rrb/Projects/aoc2023/inputs/day1")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fileScanner := bufio.NewScanner(readFile)
-	fileScanner.Split(bufio.ScanLines)
-
-	var fileLines []string // creating a slice
-
-	for fileScanner.Scan() {
-		fileLines = append(fileLines, fileScanner.Text())
-	}
-
-	readFile.Close()
-
+	fileLines := utils.ReadFile("/home/rrb/Projects/aoc2023/inputs/day1")
 	for lineNumber, line := range fileLines {
 		fmt.Println()
 		fmt.Println(lineNumber, ":\t", line)

@@ -8,8 +8,8 @@ import (
 )
 
 type game struct {
-	gameNumber, reds, greens, blues int
-	rounds                          []string
+	gameIDNumber, minRed, minGreen, minBlue, maxRed, maxGreen, maxBlue, totalReds, totalGreens, totalBlues int
+	rounds                                                                                                 []string
 }
 
 func (g game) numOfRounds() int {
@@ -24,36 +24,51 @@ func main() {
 	var games []game //?
 
 	for num, line := range fileLines {
-		gameNumber, reds, greens, blues, roundScores := getGameDetails(line)
-		games = append(games, game{gameNumber, reds, greens, blues, roundScores})
-		fmt.Println("Game ", gameNumber, ":")
+		gameIDNumber, maxRed, maxGreen, maxBlue, reds, greens, blues, roundScores := ParseGameDetails(line)
+		games = append(games, game{gameIDNumber, maxRed, maxGreen, maxBlue, reds, greens, blues, roundScores})
+		fmt.Println("Game ", gameIDNumber, ":")
 		fmt.Println(games[num])
-		for _, roundScore := range roundScores {
-			splitByColor(roundScore)
+	}
+
+	// Solution to Part - 1
+	// Sum of Game IDs where games possible with 12 red, 13 green, and 14 blue cubes
+	var sumOfGameIDs int
+	for _, game := range games {
+		if game.maxRed <= 12 && game.maxGreen <= 13 && game.maxBlue <= 14 {
+			sumOfGameIDs += game.gameIDNumber
 		}
 	}
+	fmt.Println("Solution to Part 1 = ", sumOfGameIDs)
 }
 
-func getGameNumber(GameNumber string) string {
-	indexSplit := strings.Split(GameNumber, " ")
+func getGameIDNumber(GameID string) string {
+	indexSplit := strings.Split(GameID, " ")
 	return indexSplit[len(indexSplit)-1]
 }
 
-func getGameDetails(RoundDetails string) (int, int, int, int, []string) {
-	var GameNumber int
+func ParseGameDetails(GameDetailsLine string) (int, int, int, int, int, int, int, []string) {
+	var GameID int
 	var Rounds []string
-	var Reds int
-	var Greens int
-	var Blues int
-	gameNumber, gameScores, found := strings.Cut(RoundDetails, ":")
+	var MinRed int
+	var MinGreen int
+	var MinBlue int
+	var MaxRed int
+	var MaxGreen int
+	var MaxBlue int
+	var TotalReds int
+	var TotalGreens int
+	var TotalBlues int
+	// var GameDetails game
+
+	gameIDMarker, gameScores, found := strings.Cut(GameDetailsLine, ":")
 
 	if found {
-		GameNumberVal := getGameNumber(gameNumber)
-		GameNumberInt, err := strconv.Atoi(GameNumberVal)
+		GameIDString := getGameIDNumber(gameIDMarker)
+		GameIDInt, err := strconv.Atoi(GameIDString)
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			GameNumber = GameNumberInt
+			GameID = GameIDInt
 		}
 
 		Rounds = strings.Split(gameScores, ";")
@@ -61,71 +76,80 @@ func getGameDetails(RoundDetails string) (int, int, int, int, []string) {
 		for _, round := range Rounds {
 			fmt.Println(round)
 			red, green, blue := splitByColor(round)
-			Reds += red
-			Greens += green
-			Blues += blue
+
+			// Find Highest Value drawn in game for each color
+			if red > MaxRed {
+				MaxRed = red
+			}
+			if green > MaxGreen {
+				MaxGreen = green
+			}
+			if blue > MaxBlue {
+				MaxBlue = blue
+			}
+			// Find Lowest Value drawn in game for each color
+			if red < MinRed {
+				MinRed = red
+			}
+			if green < MinGreen {
+				MinGreen = green
+			}
+			if blue < MinBlue {
+				MinBlue = blue
+			}
+
+			// Find cumlative value of drawn cubes in game for each color
+			TotalReds += red
+			TotalGreens += green
+			TotalBlues += blue
 		}
 	} else {
 		fmt.Println("Input file seems to be corrupted. Empty lines found.")
 	}
-	return GameNumber, Reds, Greens, Blues, Rounds
+	return GameID, MaxRed, MaxGreen, MaxBlue, TotalReds, TotalGreens, TotalBlues, Rounds
 }
 
 func splitByColor(RoundDetails string) (int, int, int) {
 	var Red int
 	var Green int
 	var Blue int
-	// var trimmedRounds []string
-	fmt.Println()
-	fmt.Println("Got input:", RoundDetails)
-	fmt.Println("Splitting by Color.")
 	// Strip leading and trailing whitespace
 	trimmedRoundDetails := strings.TrimSpace(RoundDetails)
 	draws := strings.Split(trimmedRoundDetails, ",")
 	for _, draw := range draws {
 		trimmedDraw := strings.TrimSpace(draw)
-		// fmt.Println("Debug: trimmedDraw:", trimmedDraw)
 		scoreAndColorSplit := strings.Split(trimmedDraw, " ")
 		if len(scoreAndColorSplit) > 2 {
-			// fmt.Println("Debug: scoreAndColorSplit:", scoreAndColorSplit)
-			// fmt.Println("Debug: Length:", len(scoreAndColorSplit))
 			panic("Score and Color for the selected draw could not be determined. Unwanted sequences in string.")
 		}
 		score := scoreAndColorSplit[0]
 		color := scoreAndColorSplit[1]
 		switch color {
 		case "red":
-			fmt.Println("\nFound red.")
 			redScore, err := strconv.Atoi(score)
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Printf("Adding %d to red score.\n", redScore)
-				Red = Red + redScore
+				Red = redScore
 			}
 		case "green":
-			fmt.Println("\nFound green.")
 			greenScore, err := strconv.Atoi(score)
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Printf("Adding %d to green score.\n", greenScore)
-				Green = Green + greenScore
+				Green = greenScore
 			}
 		case "blue":
-			fmt.Println("\nFound blue.")
 			blueScore, err := strconv.Atoi(score)
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Printf("Adding %d to blue score.\n", blueScore)
-				Blue = Blue + blueScore
+				Blue = blueScore
 			}
 		default:
 			fmt.Println("Found something weird for color value: ", color)
 		}
 
 	}
-	// trimmedRounds = append(trimmedRounds, strings.TrimSpace(round))
 	return Red, Green, Blue
 }

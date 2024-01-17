@@ -30,9 +30,6 @@ func main() {
 	for _, line := range fileLines {
 		game := ParseGameDetails(line)
 		games = append(games, game)
-		// fmt.Println("Game ", game.gameIDNumber, ":")
-		// fmt.Println("Total number of rounds:", game.numOfRounds())
-		// fmt.Println(games[num])
 	}
 
 	// Solution to Part - 1 & 2
@@ -70,9 +67,7 @@ func ParseGameDetails(GameDetailsLine string) game {
 		}
 
 		Game.rounds = strings.Split(gameScores, ";")
-		// fmt.Println("Rounds :")
 		for _, round := range Game.rounds {
-			// fmt.Println(round)
 			red, green, blue := splitByColor(round)
 
 			// Find Highest Value drawn in game for each color

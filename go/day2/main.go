@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aoc2023/go/utils"
+	u "aoc2023/go/utils"
 	"fmt"
 	"strconv"
 	"strings"
@@ -22,7 +22,7 @@ func (g game) gameScore() int {
 
 func main() {
 	// Read input and load each line as array element
-	fileLines := utils.ReadFile("/home/rrb/Projects/aoc2023/inputs/day2")
+	fileLines := u.ReadFile("/home/rrb/Projects/aoc2023/inputs/day2")
 
 	// TODO: Squeeze parsed values into struct
 	var games []game //?
